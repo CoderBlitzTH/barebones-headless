@@ -1,0 +1,21 @@
+{
+  "name": "CoderBlitzTH/barebones-headless",
+  "authors": [
+    {
+      "name": "CoderBlitz",
+      "email": "support@coderblitz.com"
+    }
+  ],
+  "require": {},
+  "scripts": {
+    "php:lint": "phpcs -p -s",
+    "php:lint:errors": "phpcs -p -s --runtime-set ignore_warnings_on_exit 1",
+    "php:lint:autofix": "phpcbf",
+    "php:lint:changed": "phpcs-changed --git --git-unstaged"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}

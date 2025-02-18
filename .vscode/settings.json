@@ -1,0 +1,11 @@
+{
+  "intelephense.format.enable": false,
+  "intelephense.environment.phpVersion": "8.2.0",
+  "[php]": {
+    "editor.defaultFormatter": "valeryanm.vscode-phpsab"
+  },
+
+  "files.associations": {
+    "*.css": "css"
+  }
+}
