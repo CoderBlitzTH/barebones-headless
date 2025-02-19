@@ -25,31 +25,8 @@ define( 'BBH_THEME_DIR', trailingslashit( get_stylesheet_directory() ) );
 define( 'BBH_THEME_URL', trailingslashit( get_stylesheet_directory_uri() ) );
 define( 'BBH_THEME_VERSION', '1.0.0' );
 
-/**
- * Check for the BBH_FRONTEND_URL constant.
- */
-if ( ! defined( 'BBH_FRONTEND_URL' ) ) {
-	define( 'BBH_FRONTEND_URL', 'https://domain.test' );
-}
-
-// Any random string. This must match the .env variable in the Next.js frontend.
-if ( ! defined( 'BBH_PREVIEW_SECRET' ) ) {
-	define( 'BBH_PREVIEW_SECRET', 'preview' );
-}
-
-// Any random string. This must match the .env variable in the Next.js frontend.
-if ( ! defined( 'BBH_REVALIDATION_SECRET' ) ) {
-	define( 'BBH_REVALIDATION_SECRET', 'revalidate' );
-}
-
-// Theme setup.
-require BBH_THEME_DIR . '/inc/theme.php';
-
-// Redirect theme requests to frontend.
-require BBH_THEME_DIR . '/inc/redirect.php';
-
-// Links class.
-require BBH_THEME_DIR . '/inc/classes/class-bbh-links.php';
-
-// Revalidation class.
-require BBH_THEME_DIR . '/inc/classes/class-bbh-revalidation.php';
+require_once BBH_THEME_DIR . 'inc/class-bbh-theme-settings.php';
+require_once BBH_THEME_DIR . 'inc/class-bbh-theme.php';
+require_once BBH_THEME_DIR . 'inc/class-bbh-revalidation.php';
+require_once BBH_THEME_DIR . 'inc/class-bbh-security.php';
+require_once BBH_THEME_DIR . 'inc/class-bbh-link-modifier.php';

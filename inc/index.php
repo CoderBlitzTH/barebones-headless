@@ -1,5 +1,8 @@
 <?php
+
 /**
+ * Redirect theme requests to frontend.
+ *
  * @author ColderBlitz
  * @package barebones-headless
  * @since 1.0.0

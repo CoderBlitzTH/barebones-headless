@@ -1,0 +1,22 @@
+# Items to ignore when downloading a zip
+
+.editorconfig export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.jshintrc export-ignore
+README.md export-ignore
+
+package.json export-ignore
+package.lock export-ignore
+yarn.lock export-ignore
+gulpfile.js export-ignore
+
+composer.json export-ignore
+composer.lock export-ignore
+phpunit.xml export-ignore
+phpcs.xml export-ignore
+
+/tests/ export-ignore
+/.buildkite/ export-ignore
+/.github/ export-ignore
+/.vscode/ export-ignore

@@ -1,12 +1,11 @@
 {
-  "name": "CoderBlitzTH/barebones-headless",
+  "name": "coderblitz/barebones-headless",
   "authors": [
     {
       "name": "CoderBlitz",
       "email": "support@coderblitz.com"
     }
   ],
-  "require": {},
   "scripts": {
     "php:lint": "phpcs -p -s",
     "php:lint:errors": "phpcs -p -s --runtime-set ignore_warnings_on_exit 1",
@@ -17,5 +16,8 @@
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
+  },
+  "require-dev": {
+    "php-stubs/acf-pro-stubs": "^6.3"
   }
 }
