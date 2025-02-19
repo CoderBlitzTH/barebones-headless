@@ -83,26 +83,6 @@ final class BBH_Theme {
 	 */
 	public function disable_frontend(): void {
 		/**
-		 * Filters whether the current user has access to the front-end.
-		 *
-		 * By default, the front-end is disabled if the user doesn't
-		 * have the capability to "edit_posts".
-		 *
-		 * Return true if you want the front-end to be disabled and
-		 * the current user to be redirected to headless mode.
-		 *
-		 * @param bool $is_disable_frontend True if the current user doesn't have the capability to "edit_posts".
-		 */
-		$is_disable_frontend = (bool) apply_filters( 'bbh_is_disable_frontend', ! current_user_can( 'edit_posts' ) );
-
-		if ( ! $is_disable_frontend ) {
-			wp_safe_redirect( admin_url() );
-			exit;
-		}
-
-		global $wp;
-
-		/**
 		 * If the request is not part of a CRON, REST Request, GraphQL Request or Admin request,
 		 * output some basic, blank markup
 		 */
@@ -113,6 +93,8 @@ final class BBH_Theme {
 			if ( strpos( home_url(), $this->theme_settings->get_frontend_url() ) === 0 ) {
 				return;
 			}
+
+			global $wp;
 
 			wp_redirect( trailingslashit( $this->theme_settings->get_frontend_url() ) . $wp->request, 301 ); // phpcs:ignore
 			exit;

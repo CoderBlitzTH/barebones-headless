@@ -41,16 +41,6 @@ Barebones Headless เป็นธีมที่ออกแบบมาสำ�
 
 ## Available Hooks
 
-### Filters
-
-1. **bbh_is_disable_frontend**
-
-   ```php
-   add_filter('bbh_is_disable_frontend', function() {
-    return current_user_can('administrator');
-   });
-   ```
-
 ### Actions
 
 1. **bbh_after_revalidation**
