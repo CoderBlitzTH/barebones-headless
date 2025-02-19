@@ -35,28 +35,21 @@ Barebones Headless เป็นธีมที่ออกแบบมาสำ�
 
 ## การติดตั้ง
 
-### 1. ติดตั้งธีม
-
 1. ดาวน์โหลดธีมและวางในโฟลเดอร์ `wp-content/themes/`
 2. เปิดใช้งานธีมใน WordPress Admin
 3. ตั้งค่า Permalink เป็น Post name (`Settings > Permalinks`)
 
-### 2. การตั้งค่าเบื้องต้น
-
-```php
-// ตัวอย่างการตั้งค่าใน functions.php ของ child theme
-// กำหนด Frontend URL
-add_filter('bbh_frontend_url', function() {
-    return 'https://your-frontend-domain.com';
-});
-
-// กำหนด Blog base
-add_filter('bbh_blog_base', function() {
-    return 'articles'; // เปลี่ยน URL จาก /blog เป็น /articles
-});
-```
-
 ## Available Hooks
+
+### Filters
+
+1. **bbh_is_disable_frontend**
+
+   ```php
+   add_filter('bbh_is_disable_frontend', function() {
+    return current_user_can('administrator');
+   });
+   ```
 
 ### Actions
 
@@ -115,7 +108,7 @@ REVALIDATE_TOKEN=your-token-from-wordpress
 curl -X POST https://your-frontend/api/revalidate \
   -H "Content-Type: application/json" \
   -H "X-Revalidate-Token: your-token" \
-  -d '{"path":"/example"}'
+  -d '{"slug":"example"}'
 ```
 
 ## การแก้ไขที่รองรับ

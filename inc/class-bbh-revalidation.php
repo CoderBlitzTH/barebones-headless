@@ -14,13 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	header( 'HTTP/1.1 404 Not Found' );
 	exit;
 }
-/**
- * Revalidation.
- *
- * @author ColderBlitz
- * @package barebones-headless
- * @since 1.0.0
- */
+
 final class BBH_Revalidation {
 	/**
 	 * The theme settings instance.

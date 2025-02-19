@@ -28,5 +28,4 @@ define( 'BBH_THEME_VERSION', '1.0.0' );
 require_once BBH_THEME_DIR . 'inc/class-bbh-theme-settings.php';
 require_once BBH_THEME_DIR . 'inc/class-bbh-theme.php';
 require_once BBH_THEME_DIR . 'inc/class-bbh-revalidation.php';
-require_once BBH_THEME_DIR . 'inc/class-bbh-security.php';
 require_once BBH_THEME_DIR . 'inc/class-bbh-link-modifier.php';
