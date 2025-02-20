@@ -15,15 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Optional. JWT auth refresh token.
-if ( ! defined( 'GRAPHQL_JWT_AUTH_SECRET_KEY' ) ) {
-	define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', '' ); // phpcs:ignore
-}
-
 // Define constants.
 define( 'BBH_THEME_DIR', trailingslashit( get_stylesheet_directory() ) );
 define( 'BBH_THEME_URL', trailingslashit( get_stylesheet_directory_uri() ) );
 define( 'BBH_THEME_VERSION', '1.0.0' );
+
+if ( ! class_exists('YahnisElsts\PluginUpdateChecker\v5\PucFactory') ) {
+	require_once BBH_THEME_DIR . 'update-checker/plugin-update-checker.php';
+	$update_checker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+		'https://github.com/CoderBlitzTH/barebones-headless/',
+		__FILE__,
+		'barebones-headless'
+	);
+}
 
 require_once BBH_THEME_DIR . 'inc/class-bbh-theme-settings.php';
 require_once BBH_THEME_DIR . 'inc/class-bbh-theme.php';

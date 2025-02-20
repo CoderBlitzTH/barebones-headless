@@ -23,7 +23,8 @@
 	<file>.</file>
 
 	<!-- Exclude patterns. -->
-	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/vendor/</exclude-pattern>
+	<exclude-pattern>/update-checker/</exclude-pattern>
 
 	<!-- Include the WordPress-Extra standard. -->
 	<rule ref="WordPress-Extra">
@@ -50,7 +51,7 @@
 	<!-- <rule ref="WordPress-Docs"/> -->
 
 	<!-- Check for PHP cross-version compatibility. -->
-	<config name="testVersion" value="8.2-"/>
+	<config name="testVersion" value="8.4-"/>
 	<rule ref="PHPCompatibilityWP"/>
 
 	<!--
@@ -61,7 +62,7 @@
 	the wiki:
 	https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
 	-->
-	<config name="minimum_supported_wp_version" value="6.5"/>
+	<config name="minimum_supported_wp_version" value="6.7"/>
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>

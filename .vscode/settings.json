@@ -1,6 +1,6 @@
 {
   "intelephense.format.enable": false,
-  "intelephense.environment.phpVersion": "8.2.0",
+  "intelephense.environment.phpVersion": "8.4",
   "[php]": {
     "editor.defaultFormatter": "valeryanm.vscode-phpsab"
   },

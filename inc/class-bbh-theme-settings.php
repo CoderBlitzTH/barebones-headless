@@ -136,9 +136,14 @@ final class BBH_Theme_Settings {
 	 */
 	public function render_settings_page(): void {
 		?>
+
 		<div class="wrap">
 			<h1>Headless Theme Settings</h1>
-			<form method="post" action="options.php">
+			<form
+				method="post"
+				action="options.php"
+				onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการบันทึกการตั้งค่านี้?')"
+			>
 				<?php
 				settings_fields( 'bbh_theme_settings' );
 				do_settings_sections( 'bbh_theme_settings' );
@@ -147,7 +152,8 @@ final class BBH_Theme_Settings {
 					<tr>
 						<th scope="row"><label for="bbh_frontend_url">Frontend URL</label></th>
 						<td>
-							<input type="url" id="bbh_frontend_url" name="bbh_frontend_url" value="<?php echo esc_attr( $this->frontend_url ); ?>" class="regular-text">
+							<input type="url" id="bbh_frontend_url" name="bbh_frontend_url" value="<?php echo esc_attr( $this->frontend_url ); ?>" class="regular-text" readonly>
+							<button type="button" class="button edit-toggle">แก้ไข</button>
 							<p class="description">URL ของ Frontend เช่น Next.js</p>
 						</td>
 					</tr>
@@ -155,7 +161,8 @@ final class BBH_Theme_Settings {
 					<tr>
 						<th scope="row">Blog Base</th>
 						<td>
-							<input type="text" name="bbh_blog_base" value="<?php echo esc_attr( $this->blog_base ); ?>" class="regular-text">
+							<input type="text" id="bbh_blog_base" name="bbh_blog_base" value="<?php echo esc_attr( $this->blog_base ); ?>" class="regular-text" readonly>
+							<button type="button" class="button edit-toggle">แก้ไข</button>
 							<p class="description">Set the base slug for blog posts (default: "blog").</p>
 						</td>
 					</tr>
@@ -163,16 +170,18 @@ final class BBH_Theme_Settings {
 					<tr>
 						<th scope="row"><label for="bbh_preview_secret">Preview Secret</label></th>
 						<td>
-							<input type="text" id="bbh_preview_secret" name="bbh_preview_secret" value="<?php echo esc_attr( $this->preview_secret ); ?>" class="regular-text">
+							<input type="text" id="bbh_preview_secret" name="bbh_preview_secret" value="<?php echo esc_attr( $this->preview_secret ); ?>" class="regular-text" readonly>
+							<button type="button" class="button edit-toggle">แก้ไข</button>
 							<p class="description">Preview Secret ต้องตรงกับค่าใน .env ของ Next.js</p>
 						</td>
 					</tr>
+
 					<tr>
 						<th scope="row">Revalidation Token</th>
 						<td>
 							<input type="text" id="bbh_revalidate_token" name="bbh_revalidate_token" readonly value="<?php echo esc_attr( $this->revalidate_token ); ?>" class="regular-text">
 							<button type="button" class="button" onclick="navigator.clipboard.writeText(this.previousElementSibling.value)">Copy</button>
-							<button type="button" class="button" onclick="generateNewToken()">Random Token</button>
+							<button type="button" class="button" onclick="generateNewToken()">New Token</button>
 							<p class="description">ใช้ Token นี้ในการทำ Revalidation</p>
 						</td>
 					</tr>
@@ -182,14 +191,34 @@ final class BBH_Theme_Settings {
 		</div>
 
 		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const editButtons = document.querySelectorAll(".edit-toggle");
+
+				editButtons.forEach(button => {
+					button.addEventListener("click", function () {
+						const input = this.previousElementSibling;
+						const isEditing = !input.readOnly;
+
+						if (isEditing) {
+							input.setAttribute("readonly", true);
+						} else {
+							input.removeAttribute("readonly");
+							this.remove();
+						}
+					});
+				});
+			});
+
 			function generateNewToken() {
-				const length = 32;
-				const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-				let token = '';
-				for (let i = 0; i < length; i++) {
-					token += chars.charAt(Math.floor(Math.random() * chars.length));
+				if (confirm('คุณต้องการสร้าง Token ใหม่หรือไม่?')) {
+					const length = 32;
+					const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+					let token = '';
+					for (let i = 0; i < length; i++) {
+						token += chars.charAt(Math.floor(Math.random() * chars.length));
+					}
+					document.getElementById('bbh_revalidate_token').value = token;
 				}
-				document.getElementById('bbh_revalidate_token').value = token;
 			}
 		</script>
 
