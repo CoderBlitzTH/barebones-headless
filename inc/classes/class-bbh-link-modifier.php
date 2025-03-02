@@ -60,29 +60,46 @@ final class BBH_Link_Modifier {
 		do_action( 'bbh_before_rest_response', $response );
 
 		// If the response has a valid post ID, add the link to the post.
-		if ( ! empty( $response->data ) ) {
-			if ( 'post' === $post->post_type ) {
-				// Get the post slug and add the link to the post.
-				$post_slug              = get_post_field( 'post_name', $post->ID );
-				$response->data['link'] = $this->theme_settings->get_frontend_url() . '/' .
-					$this->theme_settings->get_blog_base() . '/' . $post_slug;
-			} else {
-				// Get the page slug and add the link to the page.
-				$response->data['link'] = str_replace(
-					home_url(),
-					$this->theme_settings->get_frontend_url(),
-					$response->data['link']
-				);
-			}
+		if ( empty( $response->data ) ) {
+			return $response;
+		}
 
-			// If the response has a content property, replace the home_url() with the frontend URL.
-			if ( ! empty( $response->data['content']['rendered'] ) ) {
-				$response->data['content']['rendered'] = str_replace(
-					home_url(),
-					$this->theme_settings->get_frontend_url(),
-					$response->data['content']['rendered']
-				);
-			}
+		// Check if the post status is 'draft' and set the preview link accordingly.
+		if ( 'draft' === $post->post_status ) {
+			$response->data['link'] = get_preview_post_link( $post );
+			return $response;
+		}
+
+		// For published posts, modify the permalink to point to the frontend.
+		if ( 'publish' !== $post->post_status ) {
+			return $response;
+		}
+
+		if ( 'post' === $post->post_type ) {
+			// Get the post slug and add the link to the post.
+			$post_slug              = get_post_field( 'post_name', $post->ID );
+			$response->data['link'] = sprintf(
+				'%s/%s/%s',
+				$this->theme_settings->get_frontend_url(),
+				$this->theme_settings->get_blog_base(),
+				$post_slug
+			);
+		} else {
+			// Get the page slug and add the link to the page.
+			$response->data['link'] = str_replace(
+				home_url(),
+				$this->theme_settings->get_frontend_url(),
+				$response->data['link']
+			);
+		}
+
+		// If the response has a content property, replace the home_url() with the frontend URL.
+		if ( ! empty( $response->data['content']['rendered'] ) ) {
+			$response->data['content']['rendered'] = str_replace(
+				home_url(),
+				$this->theme_settings->get_frontend_url(),
+				$response->data['content']['rendered']
+			);
 		}
 
 		return $response;
@@ -105,8 +122,11 @@ final class BBH_Link_Modifier {
 
 		// Update the preview link to point to the front-end.
 		return add_query_arg(
-			array( 'secret' => $this->theme_settings->get_preview_secret() ),
-			esc_url_raw( "{$this->theme_settings->get_frontend_url()}/preview/{$post->ID}" )
+			array(
+				'secret' => $this->theme_settings->get_preview_secret(),
+				'id'     => $post->ID,
+			),
+			esc_url_raw( "{$this->theme_settings->get_frontend_url()}/preview" )
 		);
 	}
 
@@ -122,7 +142,12 @@ final class BBH_Link_Modifier {
 		// Add blog base to posts but not pages
 		if ( 'post' === get_post_type( $post ) ) {
 			$post_slug = get_post_field( 'post_name', $post->ID );
-			return $this->theme_settings->get_frontend_url() . '/' . $this->theme_settings->get_blog_base() . '/' . $post_slug;
+			return sprintf(
+				'%s/%s/%s',
+				$this->theme_settings->get_frontend_url(),
+				$this->theme_settings->get_blog_base(),
+				$post_slug
+			);
 		}
 		return str_replace( home_url(), $this->theme_settings->get_frontend_url(), $url );
 	}

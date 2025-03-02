@@ -32,6 +32,8 @@ final class BBH_Theme {
 		 * Based on https://gist.github.com/jasonbahl/5dd6c046cd5a5d39bda9eaaf7e32a09d
 		 */
 		add_action( 'parse_request', array( $this, 'disable_frontend' ), 99 );
+
+		$this->define_disable_rest_api();
 	}
 
 	/**
@@ -99,6 +101,51 @@ final class BBH_Theme {
 			wp_redirect( trailingslashit( $this->theme_settings->get_frontend_url() ) . $wp->request, 301 ); // phpcs:ignore
 			exit;
 		}
+	}
+
+	/**
+	 * Disables the WP REST API for visitors not logged into WordPress.
+	 */
+	public function define_disable_rest_api(): void {
+		/**
+		 * Disable REST API link in HTTP headers
+		 * @link <https://example.com/wp-json/>; rel="https://api.w.org/"
+		 */
+		remove_action( 'template_redirect', 'rest_output_link_header', 11 );
+
+		/**
+		 * Disable REST API links in HTML <head>
+		 * <link rel='https://api.w.org/' href='https://example.com/wp-json/' />
+		 */
+		remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
+		remove_action( 'xmlrpc_rsd_apis', 'rest_output_rsd' );
+
+		/**
+		 * Disable REST API
+		 *
+		 * @link https://developer.wordpress.org/reference/hooks/rest_authentication_errors/
+		 *
+		 * @param WP_Error|null|true $access
+		 * @return WP_Error|null|true
+		 */
+		add_filter(
+			'rest_authentication_errors',
+			static function ( $access ) {
+				if ( ! is_user_logged_in()
+				|| ! current_user_can( 'edit_posts' )
+				|| ! current_user_can( 'manage_options' )
+				) {
+					return new WP_Error(
+						'rest_forbidden',
+						__( 'REST API is restricted to Admin and Editors only.', 'bbh' ),
+						array( 'status' => rest_authorization_required_code() )
+					);
+
+				}
+
+				return $access;
+			}
+		);
 	}
 }
 

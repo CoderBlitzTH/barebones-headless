@@ -1,0 +1,16 @@
+[
+  {
+    "name": "WPGraphQL",
+    "host": "wordpress",
+    "slug": "wp-graphql/wp-graphql.php",
+    "uri": "https://wordpress.org/plugins/wp-graphql/",
+    "required": true
+  },
+  {
+    "name": "Classic Editor",
+    "host": "wordpress",
+    "slug": "classic-editor/classic-editor.php",
+    "uri": "https://wordpress.org/plugins/classic-editor/",
+    "required": true
+  }
+]
