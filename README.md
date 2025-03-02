@@ -60,13 +60,6 @@ Barebones Headless เป็นธีมที่ออกแบบมาสำ�
 
 ## REST API Endpoints
 
-### Posts
-
-```
-GET /wp-json/wp/v2/posts
-GET /wp-json/wp/v2/posts/{id}
-```
-
 ### Custom Endpoints
 
 ```
