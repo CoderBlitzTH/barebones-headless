@@ -7,6 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! bbh_get_wpdi()->is_active( 'wp-graphql/wp-graphql.php' ) ) {
+	return;
+}
+
 /**
  * Filter WPGraphQL comment insert arguments to use local WordPress time.
  *

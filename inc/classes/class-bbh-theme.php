@@ -25,15 +25,28 @@ final class BBH_Theme {
 		$this->theme_settings = BBH_Theme_Settings::get_instance();
 
 		add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
-		add_action( 'send_headers', array( $this, 'add_cors_headers' ) );
-		add_action( 'send_headers', array( $this, 'add_security_headers' ) );
+
+		/**
+		 * Remove FSE
+		 */
+		add_action( 'after_setup_theme', array( $this, 'remove_site_editor_setup_theme' ), 999 );
+		add_action( 'admin_menu', array( $this, 'remove_site_editor_menu' ), 999 );
+		add_action( 'admin_init', array( $this, 'redirect_from_site_editor' ) );
+
+		/**
+		 * Remove Customizer
+		*/
+		add_action( 'admin_menu', array( $this, 'remove_customize_menu' ), 999 );
+		add_action( 'admin_init', array( $this, 'disable_customize_manager' ) );
+		add_action( 'load-customize.php', array( $this, 'redirect_theme_customizer' ) );
+		add_action( 'init', array( $this, 'remove_map_meta_cap_customizer' ) );
 
 		/**
 		 * Based on https://gist.github.com/jasonbahl/5dd6c046cd5a5d39bda9eaaf7e32a09d
 		 */
-		add_action( 'parse_request', array( $this, 'disable_frontend' ), 99 );
+		add_action( 'parse_request', array( $this, 'disable_frontend' ), 999 );
 
-		$this->define_disable_rest_api();
+		$this->disable_rest_api();
 	}
 
 	/**
@@ -46,38 +59,92 @@ final class BBH_Theme {
 	}
 
 	/**
-	 * Adds CORS headers to the response.
+	 * Remove FSE (Full Site Editing) support
 	 */
-	public function add_cors_headers(): void {
-		$origin = get_http_origin();
-		if ( $origin ) {
-			header( 'Access-Control-Allow-Origin: ' . esc_url_raw( $origin ) );
-		}
+	public function remove_site_editor_setup_theme(): void {
+		remove_theme_support( 'block-templates' );
+		remove_theme_support( 'block-template-parts' );
+		remove_theme_support( 'widgets-block-editor' );
+		remove_theme_support( 'core-block-patterns' );
+		remove_theme_support( 'custom-spacing' );
+		remove_theme_support( 'custom-units' );
+		remove_theme_support( 'customize-selective-refresh' );
+		remove_theme_support( 'customize-selective-refresh-widgets' );
+	}
 
-		header( 'Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS' );
-		header( 'Access-Control-Allow-Credentials: true' );
-		header( 'Access-Control-Allow-Headers: Authorization, Content-Type' );
+	/**
+	 * Remove Site Editor menu items
+	 */
+	public function remove_site_editor_menu(): void {
+		remove_menu_page( 'site-editor.php' );
+		remove_submenu_page( 'themes.php', 'site-editor.php?path=/patterns' );
+	}
 
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
-			status_header( 200 );
-			exit();
+	/**
+	 * Redirect from site-editor
+	 */
+	public function redirect_from_site_editor(): void {
+		global $pagenow;
+		if ( 'site-editor.php' === $pagenow ) {
+			wp_safe_redirect( admin_url( 'index.php' ) );
+			exit;
 		}
 	}
 
 	/**
-	 * Adds security headers to the HTTP response.
-	 *
-	 * This function sets several HTTP headers to enhance the security of the application:
-	 * - X-Frame-Options: SAMEORIGIN
-	 * - X-XSS-Protection: 1; mode=block
-	 * - X-Content-Type-Options: nosniff
-	 * - Referrer-Policy: strict-origin-when-cross-origin
+	 * Remove Customize from the admin menu
 	 */
-	public function add_security_headers(): void {
-		header( 'X-Frame-Options: SAMEORIGIN' );
-		header( 'X-XSS-Protection: 1; mode=block' );
-		header( 'X-Content-Type-Options: nosniff' );
-		header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+	public function remove_customize_menu(): void {
+		remove_submenu_page( 'themes.php', 'customize.php' );
+		remove_submenu_page( 'themes.php', 'customize.php?return=' . rawurlencode( $_SERVER['REQUEST_URI'] ) );
+	}
+
+	/**
+	 * Remove customize support and related functionality
+	 */
+	public function disable_customize_manager(): void {
+		remove_action( 'plugins_loaded', '_wp_customize_include' );
+		remove_action( 'admin_enqueue_scripts', '_wp_customize_loader_settings' );
+
+		// Remove the customizer from the admin bar
+		add_action(
+			'wp_before_admin_bar_render',
+			function (): void {
+				global $wp_admin_bar;
+				$wp_admin_bar->remove_menu( 'customize' );
+			}
+		);
+	}
+
+	/**
+	 * Redirect away from the customizer if accessed directly
+	 */
+	public function redirect_theme_customizer(): void {
+		wp_safe_redirect( admin_url( 'index.php' ) );
+		exit;
+	}
+
+	/**
+	 * Removes the capability to use the Customizer.
+	 *
+	 * This function modifies the capabilities map to disallow the 'customize' capability.
+	 * It effectively prevents users from accessing the WordPress Customizer.
+	 */
+	public function remove_map_meta_cap_customizer(): void {
+		add_filter(
+			'map_meta_cap',
+			static function ( $caps, $cap ) {
+				// Check if the requested capability is 'customize'.
+				if ( 'customize' === $cap ) {
+					// Return an array that disallows the capability.
+					return array( 'do_not_allow' );
+				}
+				// Return the original capabilities if not targeting 'customize'.
+				return $caps;
+			},
+			10,
+			2
+		);
 	}
 
 	/**
@@ -106,7 +173,7 @@ final class BBH_Theme {
 	/**
 	 * Disables the WP REST API for visitors not logged into WordPress.
 	 */
-	public function define_disable_rest_api(): void {
+	public function disable_rest_api(): void {
 		/**
 		 * Disable REST API link in HTTP headers
 		 * @link <https://example.com/wp-json/>; rel="https://api.w.org/"

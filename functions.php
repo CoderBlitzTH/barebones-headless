@@ -16,23 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants.
-define( 'BBH_THEME_DIR', trailingslashit( get_stylesheet_directory() ) );
-define( 'BBH_THEME_URL', trailingslashit( get_stylesheet_directory_uri() ) );
+define( 'BBH_THEME_DIR', trailingslashit( get_template_directory() ) );
+define( 'BBH_THEME_URL', trailingslashit( get_template_directory_uri() ) );
 define( 'BBH_THEME_VERSION', '1.1.0' );
-
-// Include library.
-require_once BBH_THEME_DIR . 'lib/wp-dismiss-notice/wp-dismiss-notice.php';
-require_once BBH_THEME_DIR . 'lib/wp-dependency-installer/wp-dependency-installer.php';
-require_once BBH_THEME_DIR . 'lib/wp-dependency-installer/wp-dependency-installer-skin.php';
-
-// Include classes.
-require_once BBH_THEME_DIR . 'inc/classes/class-bbh-theme-settings.php';
-require_once BBH_THEME_DIR . 'inc/classes/class-bbh-theme.php';
-require_once BBH_THEME_DIR . 'inc/classes/class-bbh-revalidation.php';
-require_once BBH_THEME_DIR . 'inc/classes/class-bbh-link-modifier.php';
-
-// WPGraphQL
-require_once BBH_THEME_DIR . 'inc/wpgraphql-functions.php';
 
 if ( ! class_exists( 'YahnisElsts\PluginUpdateChecker\v5\PucFactory' ) ) {
 	require_once BBH_THEME_DIR . 'lib/update-checker/plugin-update-checker.php';
@@ -43,6 +29,14 @@ if ( ! class_exists( 'YahnisElsts\PluginUpdateChecker\v5\PucFactory' ) ) {
 	);
 }
 
+// Include library.
+require_once BBH_THEME_DIR . 'lib/wp-dismiss-notice/wp-dismiss-notice.php';
+require_once BBH_THEME_DIR . 'lib/wp-dependency-installer/wp-dependency-installer.php';
+require_once BBH_THEME_DIR . 'lib/wp-dependency-installer/wp-dependency-installer-skin.php';
+
+// Set the vendor directory to `/lib`.
+add_filter( 'dismiss_notice_vendor_dir', static fn() => '/lib' );
+
 if ( ! function_exists( 'bbh_get_wpdi' ) ) {
 	/**
 	 * Get the WP Dependency Installer instance.
@@ -51,12 +45,16 @@ if ( ! function_exists( 'bbh_get_wpdi' ) ) {
 	 * @return WP_Dependency_Installer
 	 */
 	function bbh_get_wpdi(): WP_Dependency_Installer {
-		return WP_Dependency_Installer::instance( BBH_THEME_DIR );
+		return WP_Dependency_Installer::instance( get_stylesheet_directory() )->run();
 	}
-
-	// Run the WP Dependency Installer.
-	bbh_get_wpdi()->run();
+	add_action( 'after_setup_theme', 'bbh_get_wpdi', 8 );
 }
 
-// Set the vendor directory to `/lib`.
-add_filter( 'dismiss_notice_vendor_dir', static fn() => '/lib' );
+// Include classes.
+require_once BBH_THEME_DIR . 'inc/classes/class-bbh-theme-settings.php';
+require_once BBH_THEME_DIR . 'inc/classes/class-bbh-theme.php';
+require_once BBH_THEME_DIR . 'inc/classes/class-bbh-revalidation.php';
+require_once BBH_THEME_DIR . 'inc/classes/class-bbh-link-modifier.php';
+
+// WPGraphQL
+require_once BBH_THEME_DIR . 'inc/wpgraphql-functions.php';

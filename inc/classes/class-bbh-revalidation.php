@@ -73,9 +73,9 @@ final class BBH_Revalidation {
 	 *
 	 * @param WP_REST_Request $request The request.
 	 *
-	 * @return array The response.
+	 * @return array|WP_Error The response.
 	 */
-	public function handle_manual_revalidation( WP_REST_Request $request ): array {
+	public function handle_manual_revalidation( WP_REST_Request $request ) {
 		$params = $request->get_json_params();
 		$slug   = isset( $params['slug'] ) ? sanitize_text_field( $params['slug'] ) : null;
 
