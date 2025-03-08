@@ -91,7 +91,7 @@ NEXTJS_AUTH_REFRESH_TOKEN="your-refresh-token-here"
 
 ## ตัวอย่างการใช้งาน Hooks
 
-### Action: ทำอะไรหลัง Revalidation
+### Action
 
 ```php
 add_action('bbh_after_revalidate', function(array $paths, $response) {
@@ -102,14 +102,75 @@ add_action('bbh_after_revalidate', function(array $paths, $response) {
 });
 ```
 
-### Filter: ปรับแต่ง URL สำหรับ Revalidation
+## Filters
+
+นี่คือ Filters ทั้ง 4 ตัวที่คุณสามารถใช้ปรับแต่งธีมได้ พร้อมตัวอย่างการใช้งานจริง:
+
+### 1. `bbh_frontend_revalidate_url`
+
+- **ใช้ทำอะไร**: เปลี่ยน URL ที่ใช้ส่งคำขอ Revalidation ไปยัง Frontend
+- **ตัวอย่างโค้ด**:
 
 ```php
 add_filter('bbh_frontend_revalidate_url', function() {
-    // เปลี่ยนเส้นทางไปยัง API อื่น
-    return "https://mywebsite.com/api/custom-revalidate";
+    // เปลี่ยนไปใช้ API endpoint อื่นของ Frontend
+    return "https://mywebsite.com/custom-api/revalidate";
 });
 ```
+
+- **อธิบาย**: ถ้า Frontend ของคุณใช้ URL อื่นที่ไม่ใช่ค่าเริ่มต้น (เช่น `/api/revalidate`) คุณสามารถปรับที่นี่ได้
+
+---
+
+### 2. `bbh_revalidate_paths`
+
+- **ใช้ทำอะไร**: ปรับเปลี่ยนรายการเส้นทาง (paths) ที่จะส่งไป Revalidate เมื่อโพสต์มีการอัปเดต
+- **ตัวอย่างโค้ด**:
+
+```php
+add_filter('bbh_revalidate_paths', function(array $paths, WP_Post $post) {
+    // เพิ่มเส้นทางพิเศษ เช่น หน้า category ของโพสต์
+    $category = get_the_category($post->ID)[0]->slug;
+    $paths[] = "/category/" . $category;
+    return $paths;
+}, 10, 2);
+```
+
+- **อธิบาย**: สมมติคุณอยากให้หน้า Category อัปเดตด้วยเมื่อโพสต์มีการเปลี่ยนแปลง โค้ดนี้จะเพิ่มเส้นทางนั้นเข้าไป
+
+---
+
+### 3. `bbh_revalidation_term_paths`
+
+- **ใช้ทำอะไร**: ปรับเปลี่ยนเส้นทาง (paths) ที่เกี่ยวข้องกับ Term (เช่น Category หรือ Tag) ก่อนส่งไป Revalidate
+- **ตัวอย่างโค้ด**:
+
+```php
+add_filter('bbh_revalidation_term_paths', function(array $paths, WP_Term $term) {
+    // เพิ่มหน้าหลักของ taxonomy เข้าไปด้วย
+    $paths[] = "/all-" . $term->taxonomy;
+    return $paths;
+}, 10, 2);
+```
+
+- **อธิบาย**: ถ้าคุณมีหน้าแสดงรายการ Term ทั้งหมด (เช่น `/all-categories`) โค้ดนี้จะเพิ่มเข้าไปใน Revalidation
+
+---
+
+### 4. `bbh_allowed_revalidate_domains`
+
+- **ใช้ทำอะไร**: กำหนดโดเมนที่อนุญาตให้ส่งข้อมูล Revalidation เข้ามาที่ WordPress
+- **ตัวอย่างโค้ด**:
+
+```php
+add_filter('bbh_allowed_revalidate_domains', function(array $domains) {
+    // เพิ่มโดเมนพิเศษที่อนุญาต
+    $domains[] = "https://staging.mywebsite.com";
+    return $domains;
+});
+```
+
+- **อธิบาย**: ถ้าคุณมีเว็บ Staging หรือโดเมนอื่นที่ต้องการให้เชื่อมต่อได้ เพิ่มเข้าไปในลิสต์นี้
 
 ---
 
