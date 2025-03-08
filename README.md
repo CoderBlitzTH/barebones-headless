@@ -1,193 +1,169 @@
-# Headless WordPress Theme: Barebones Headless Documentation
+# Barebones Headless WordPress Theme: คู่มือเริ่มต้นใช้งาน
 
-## Overview
+## ภาพรวม
 
-Barebones Headless เป็นธีมที่ออกแบบมาสำหรับใช้ WordPress เป็น Headless CMS โดยเฉพาะ รองรับการทำงานร่วมกับ Next.js และ Nuxt.js พร้อมฟีเจอร์ต่างๆ เช่น GraphQL, และ Revalidation
+Barebones Headless เป็นธีม WordPress ที่ออกแบบมาเพื่อให้คุณใช้ WordPress เป็น Headless CMS ได้อย่างง่ายดาย โดยทำงานร่วมกับ Next.js หรือ Nuxt.js ได้อย่างลงตัว รองรับฟีเจอร์เจ๋งๆ เช่น GraphQL และระบบ Revalidation (การอัปเดตข้อมูลอัตโนมัติ)
+
+---
 
 ## ความต้องการของระบบ
 
-- WordPress 6.7 ขึ้นไป
-- PHP 8.0 ขึ้นไป
-- MySQL 5.7 ขึ้นไป
+- **WordPress**: เวอร์ชัน 6.7 ขึ้นไป
+- **PHP**: เวอร์ชัน 8.0 ขึ้นไป
+- **MySQL**: เวอร์ชัน 5.7 ขึ้นไป
 
-### ปลั๊กอินที่จำเป็น
+### ปลั๊กอินที่ต้องติดตั้ง
 
-1. **WPGraphQL** (บังคับใช้)
+1. **WPGraphQL** (จำเป็น)
 
-   - สำหรับเพิ่ม GraphQL API
-   - ต้องติดตั้งร่วมกับ ACF to WPGraphQL ถ้าใช้ ACF
-   - [หน้าปลั๊กอิน](https://wordpress.org/plugins/wp-graphql/)
+   - ใช้เพิ่ม GraphQL API เพื่อดึงข้อมูลจาก WordPress
+   - ถ้าใช้ ACF ต้องติดตั้งปลั๊กอิน ACF to WPGraphQL เพิ่มด้วย
+   - ดาวน์โหลด: [wordpress.org/plugins/wp-graphql/](https://wordpress.org/plugins/wp-graphql/)
 
-2. **Headless Login for WPGraphQL** (บังคับใช้)
+2. **Headless Login for WPGraphQL** (จำเป็น)
 
-   - สำหรับเพิ่ม Authentication
-   - ต้องติดตั้งร่วมกับ WPGraphQL
-   - [หน้าปลั๊กอิน](https://github.com/AxeWP/wp-graphql-headless-login/)
+   - ใช้สำหรับระบบล็อกอินและการยืนยันตัวตน
+   - ต้องใช้คู่กับ WPGraphQL
+   - ดาวน์โหลด: [github.com/AxeWP/wp-graphql-headless-login/](https://github.com/AxeWP/wp-graphql-headless-login/)
 
-3. **Advanced Custom Fields หรือ Advanced Custom Fields Pro** (ถ้าต้องการใช้ แนะนำ)
+3. **Advanced Custom Fields (ACF)** (แนะนำ)
 
-   - สำหรับสร้าง custom fields
+   - ช่วยสร้างฟิลด์ข้อมูลพิเศษตามที่คุณต้องการ
    - รองรับทั้ง REST API และ GraphQL
-   - [หน้าปลั๊กอิน](https://wordpress.org/plugins/advanced-custom-fields/)
+   - ดาวน์โหลด: [wordpress.org/plugins/advanced-custom-fields/](https://wordpress.org/plugins/advanced-custom-fields/)
 
-4. **ACF to WPGraphQL** (ถ้าใช้ทั้ง ACF และ GraphQL)
-   - เชื่อมต่อ ACF fields เข้ากับ GraphQL
-   - [หน้าปลั๊กอิน](https://wordpress.org/plugins/wpgraphql-acf/)
+4. **ACF to WPGraphQL** (ถ้าใช้ ACF กับ GraphQL)
+   - เชื่อมข้อมูลจาก ACF เข้ากับ GraphQL
+   - ดาวน์โหลด: [wordpress.org/plugins/wpgraphql-acf/](https://wordpress.org/plugins/wpgraphql-acf/)
+
+---
 
 ## การติดตั้ง
 
-1. ดาวน์โหลดธีมและวางในโฟลเดอร์ `wp-content/themes/`
-2. เปิดใช้งานธีมใน WordPress Admin
-3. ตั้งค่า Permalink เป็น Post name (`Settings > Permalinks`)
+1. ดาวน์โหลดธีมแล้ววางไว้ในโฟลเดอร์ `wp-content/themes/`
+2. เข้าไปที่ WordPress Admin แล้วเปิดใช้งานธีม
+3. ตั้งค่า Permalink เป็น "Post name" ที่ `Settings > Permalinks`
 
-### การตั้งค่า
+### การตั้งค่าเริ่มต้น
 
-1. ตั้งค่า Frontend URL, Blog Base, Preview Secret, Revalidation Token ใน WordPress Admin (`Theme Settings`)
-2. ตั้งค่า environment variable ใน Next.js/Nuxt.js:
-3. หากต้องการให้การตั้งค่าเป็นความลับสามารถตั้งค่าได้ที่ `wp-config.php` (ไม่จำเป็นเนื่องจากตั้งค่าได้ที่ Dashboard)
+1. **ตั้งค่าใน WordPress Admin**
+
+   - ไปที่ `Theme Settings` แล้วกรอก:
+     - **Frontend URL**: ลิงก์หน้าเว็บของคุณ (เช่น `https://mywebsite.com`)
+     - **Blog Base**: ชื่อเส้นทางของบล็อก (เช่น `blog`)
+     - **Preview Secret**: รหัสลับสำหรับดูตัวอย่าง
+     - **Revalidation Token**: รหัสลับสำหรับอัปเดตข้อมูล
+
+2. **ตั้งค่าผ่าน `wp-config.php` (ถ้าต้องการความปลอดภัยสูง)**
+   - เพิ่มโค้ดนี้ในไฟล์ `wp-config.php`:
 
 ```php
-// URL ของ Frontend ของคุณ รวมถึงเครื่องหมายทับที่ไม่ต่อท้าย
-define( 'FRONTEND_URL', 'https://frontend-domain.com' );
-
-// Path ของบทความ ตัวอย่าง `https://frontend-domain.com/blog`
-define( 'BLOG_BASE', 'blog' );
-
-// รหัสลับหรือโทเคน จะต้องตรงกับตัวแปร .env ใน frontend
-define( 'PREVIEW_SECRET', 'preview' );
-
-// รหัสลับหรือโทเคน จะต้องตรงกับตัวแปร .env ใน frontend
-define( 'REVALIDATION_SECRET', 'revalidate' );
+define('BBH_FRONTEND_URL', 'https://mywebsite.com'); // URL หน้าเว็บ
+define('BBH_BLOG_BASE', 'blog'); // เส้นทางบล็อก
+define('BBH_PREVIEW_SECRET', 'my-preview-secret'); // รหัสลับสำหรับดูตัวอย่าง
+define('BBH_REVALIDATION_SECRET', 'my-revalidation-secret'); // รหัสลับสำหรับอัปเดตข้อมูล
 ```
 
-4. การตรวจสอบสิทธิ์สำหรับการดูตัวอย่าง
-   หากต้องการค้นหาโพสต์แบบร่างสำหรับ Previews คุณจะต้องทำการตรวจสอบสิทธิ์ด้วย WordPress ขั้นตอนต่อไปนี้เป็นขั้นตอนครั้งเดียว:
-
-- ติดตั้งและเปิดใช้งานปลั๊กอิน [Headless Login for WPGraphQL](https://github.com/AxeWP/wp-graphql-headless-login/)
-- ไปที่เมนู GraphQL -> Settings ในหน้า WordPress admin
-- ไปที่แท็บ Headless Login -> Providers -> Password -> Password Settings -> Enable Provider -> Save Providers
-- ไปที่เมนู GraphQL -> GraphiQL IDE
-- คัดลอกข้อความต่อไปนี้แล้ววางลงใน GraphiQL IDE (แทนที่ your_username และ your_password ด้วย User WordPress ของคุณ)
+3. **ตั้งค่าระบบดูตัวอย่าง (Preview)**
+   - ติดตั้งปลั๊กอิน **Headless Login for WPGraphQL**
+   - เข้าไปที่ `GraphQL > Settings > Headless Login > Providers > Password`
+   - เปิดใช้งาน "Password Provider" แล้วกดบันทึก
+   - ไปที่ `GraphQL > GraphiQL IDE` แล้วรันโค้ดนี้ (เปลี่ยน `username` และ `password` เป็นของจริง):
 
 ```graphql
-mutation login {
-  login(input: { provider: PASSWORD, credentials: { username: "your_username", password: "your_password" } }) {
+mutation {
+  login(input: { provider: PASSWORD, credentials: { username: "admin", password: "123456" } }) {
     authToken
     refreshToken
   }
 }
 ```
 
-- คลิกปุ่ม Execute Query หรือคีย์ลัด (Ctrl-Enter) ใน GraphiQL เพื่อรัน mutation
-- คัดลอก `refreshToken` ใน mutation ที่ส่งมา
-- เปิดไฟล์ Next.js/Nuxt.js `.env.local` และวาง `RefreshToken` ลงในตัวแปร `NEXTJS_AUTH_REFRESH_TOKEN`
+- คัดลอก `refreshToken` ที่ได้ แล้วเพิ่มในไฟล์ `.env.local` ของ Next.js/Nuxt.js:
 
 ```env
-# Optional. JWT auth refresh token.
-NEXTJS_AUTH_REFRESH_TOKEN="refresh-token-generated-by-grapqh-query"
+NEXTJS_AUTH_REFRESH_TOKEN="your-refresh-token-here"
 ```
 
-- ตอนนี้คุณควรสามารถดูตัวอย่างโพสต์แบบร่างในแอป Next.js/Nuxt.js ของคุณได้แล้วโดยคลิกปุ่มดูตัวอย่างในผู้ดูแลระบบ WordPress ของคุณ
+- เสร็จแล้ว! คุณสามารถดูโพสต์แบบร่างได้โดยคลิก "Preview" ใน WordPress Admin
 
-## Available Hooks
+---
 
-### Actions
+## ตัวอย่างการใช้งาน Hooks
 
-1. **bbh_after_revalidate**
+### Action: ทำอะไรหลัง Revalidation
 
-   ```php
-    add_action( 'bbh_after_revalidate',  function(array $paths, array|\WP_Error $response) {
-       // หลังจาก revalidate เสร็จแล้วอยากให้ระบบทำอะไรต่อ
-   });
-   ```
+```php
+add_action('bbh_after_revalidate', function(array $paths, $response) {
+    // แสดงข้อความเมื่ออัปเดตข้อมูลเสร็จ
+    if (!is_wp_error($response)) {
+        error_log('Revalidation เสร็จแล้วสำหรับ: ' . implode(', ', $paths));
+    }
+});
+```
 
-### Filters
+### Filter: ปรับแต่ง URL สำหรับ Revalidation
 
-1. **bbh_frontend_revalidate_url**
+```php
+add_filter('bbh_frontend_revalidate_url', function() {
+    // เปลี่ยนเส้นทางไปยัง API อื่น
+    return "https://mywebsite.com/api/custom-revalidate";
+});
+```
 
-   ```php
-    apply_filters( 'bbh_frontend_revalidate_url',  function(string $path) {
-       // แก้ไข revalidate api frontend
-   });
-   ```
+---
 
-2. **bbh_revalidate_paths**
+## ระบบ Revalidation (การอัปเดตข้อมูล)
 
-   ```php
-    apply_filters( 'bbh_revalidate_paths',  function(array $paths, WP_Post $post) {
-       // จัดการ paths ก่อนส่งไปที่ frontend api
-    });
-   ```
+### อัปเดตอัตโนมัติ
 
-3. **bbh_revalidation_term_paths**
+ระบบจะอัปเดตข้อมูลให้เองเมื่อ:
 
-   ```php
-    apply_filters( 'bbh_revalidation_term_paths',  function(array $paths, WP_Term $term) {
-       // จัดการ paths ก่อนส่งไปที่ frontend api
-    });
-   ```
+- บันทึกหรือแก้ไขโพสต์/หน้า
+- อัปเดตเมนู
+- ลบโพสต์/หน้า
 
-4. **bbh_allowed_revalidate_domains**
-   ```php
-    apply_filters( 'bbh_allowed_revalidate_domains',  function(array $domain) {
-       // อนุญาติในการส่งข้อมูลเข้ามาที่ backend
-    });
-   ```
+### อัปเดตด้วยตัวเอง
 
-## Revalidation System
-
-### Automatic Revalidation
-
-ระบบจะ revalidate อัตโนมัติเมื่อ:
-
-- บันทึก/อัพเดท post หรือ page
-- อัพเดทเมนู
-- ลบ post หรือ page
-
-### Manual Revalidation
+ใช้คำสั่งนี้ใน Terminal:
 
 ```bash
-curl -X POST https://your-frontend/api/revalidate \
+curl -X POST https://mywebsite.com/api/revalidate \
   -H "Content-Type: application/json" \
-  -H "X-Revalidate-Token: your-token" \
-  -d '{"paths":"example"}'
+  -H "X-Revalidate-Token: my-revalidation-secret" \
+  -d '{"paths": ["/blog/post-1", "/blog/post-2"]}'
 ```
 
-## ข้อแนะนำในการใช้งาน
+---
 
-### Performance
+## คำแนะนำเพิ่มเติม
 
-1. ตั้งค่า Revalidation ให้เหมาะสม
-2. ใช้ GraphQL เมื่อต้องการดึงข้อมูลที่ซับซ้อน
+### ประสิทธิภาพ
 
-### Security
+- ตั้งค่า Revalidation ให้เหมาะกับจำนวนข้อมูล
+- ใช้ GraphQL เมื่อต้องการข้อมูลเยอะๆ
 
-1. เปลี่ยน Revalidation Token เป็นประจำ
-2. ตั้งค่า CORS ให้เหมาะสม
-3. ใช้ SSL สำหรับทั้ง WordPress และ Frontend
+### ความปลอดภัย
+
+- เปลี่ยนรหัส Revalidation Token บ่อยๆ
+- ใช้ HTTPS เสมอ
 
 ### SEO
 
-1. ตั้งค่า meta tags ใน Frontend
-2. ใช้ dynamic sitemap
-3. ตั้งค่า robots.txt ทั้งสองฝั่ง
+- เพิ่ม meta tags ในหน้าเว็บ
+- ใช้ sitemap แบบอัปเดตอัตโนมัติ
 
-## การแก้ไขปัญหาเบื้องต้น
+---
 
-### Revalidation Issues
+## การแก้ปัญหาเบื้องต้น
 
-1. ตรวจสอบ token
-2. ตรวจสอบ URL endpoints
-3. เช็ค error logs
+### ปัญหา Revalidation ไม่ทำงาน
 
-### GraphQL Issues
+1. เช็คว่า Token ถูกต้อง
+2. ตรวจสอบ URL ใน `Theme Settings`
+3. ดู log ข้อผิดพลาดในเซิร์ฟเวอร์
 
-1. ตรวจสอบการติดตั้ง plugins
-2. ตรวจสอบ schema
-3. ใช้ GraphiQL debugger
+### ปัญหา GraphQL
 
-## Support และการอัพเดท
-
-- ติดตามการอัพเดทที่ GitHub repository
-- รายงานปัญหาที่ Issue tracker
-- ดูตัวอย่างเพิ่มเติมที่ example repository
+1. ตรวจสอบว่าติดตั้งปลั๊กอินครบ
+2. ลองใช้ GraphiQL เพื่อทดสอบ

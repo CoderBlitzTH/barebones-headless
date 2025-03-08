@@ -70,6 +70,9 @@ final class BBH_Theme_Settings {
 	 * @return string The frontend URL.
 	 */
 	public function get_frontend_url(): string {
+		if ( defined( 'BBH_FRONTEND_URL' ) && BBH_FRONTEND_URL ) {
+			return BBH_FRONTEND_URL;
+		}
 		return $this->frontend_url;
 	}
 
@@ -79,6 +82,9 @@ final class BBH_Theme_Settings {
 	 * @return string The blog base.
 	 */
 	public function get_blog_base(): string {
+		if ( defined( 'BBH_BLOG_BASE' ) && BBH_BLOG_BASE ) {
+			return BBH_BLOG_BASE;
+		}
 		return $this->blog_base;
 	}
 
@@ -88,6 +94,9 @@ final class BBH_Theme_Settings {
 	 * @return string The preview secret.
 	 */
 	public function get_preview_secret(): string {
+		if ( defined( 'BBH_PREVIEW_SECRET' ) && BBH_PREVIEW_SECRET ) {
+			return BBH_PREVIEW_SECRET;
+		}
 		return $this->preview_secret;
 	}
 
@@ -97,6 +106,9 @@ final class BBH_Theme_Settings {
 	 * @return string The revalidate token.
 	 */
 	public function get_revalidate_token(): string {
+		if ( defined( 'BBH_REVALIDATION_SECRET' ) && BBH_REVALIDATION_SECRET ) {
+			return BBH_REVALIDATION_SECRET;
+		}
 		return $this->revalidate_token;
 	}
 
