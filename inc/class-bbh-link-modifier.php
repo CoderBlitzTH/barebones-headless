@@ -36,10 +36,6 @@ final class BBH_Link_Modifier {
 	 * Initialize hooks.
 	 */
 	private function init_hooks(): void {
-		// Modifies the REST response to include the link to the post.
-		add_filter( 'rest_prepare_post', array( $this, 'modify_rest_response' ), 10, 2 );
-		add_filter( 'rest_prepare_page', array( $this, 'modify_rest_response' ), 10, 2 );
-
 		// Modifies the post link and page link.
 		add_filter( 'preview_post_link', array( $this, 'modify_preview_post_link' ), 10, 2 );
 		add_filter( 'post_link', array( $this, 'modify_post_link' ), 10, 2 );
@@ -48,65 +44,9 @@ final class BBH_Link_Modifier {
 		// Modifies the category link and tag link.
 		add_filter( 'category_link', array( $this, 'modify_category_link' ) );
 		add_filter( 'tag_link', array( $this, 'modify_tag_link' ) );
-	}
 
-	/**
-	 * Modifies the REST response to include the link to the post.
-	 *
-	 * @param WP_REST_Response $response The REST response.
-	 * @param WP_Post          $post     The post object.
-	 *
-	 * @return WP_REST_Response The modified REST response.
-	 */
-	public function modify_rest_response( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
-		// Call the action hook to allow other plugins to modify the response before it's sent.
-		// This action hook is called right before the response is sent to the client.
-		do_action( 'bbh_before_rest_response', $response );
-
-		// If the response has a valid post ID, add the link to the post.
-		if ( empty( $response->data ) ) {
-			return $response;
-		}
-
-		// Check if the post status is 'draft' and set the preview link accordingly.
-		if ( 'draft' === $post->post_status ) {
-			$response->data['link'] = get_preview_post_link( $post );
-			return $response;
-		}
-
-		// For published posts, modify the permalink to point to the frontend.
-		if ( 'publish' !== $post->post_status ) {
-			return $response;
-		}
-
-		if ( 'post' === $post->post_type ) {
-			// Get the post slug and add the link to the post.
-			$post_slug              = get_post_field( 'post_name', $post->ID );
-			$response->data['link'] = sprintf(
-				'%s/%s/%s',
-				$this->theme_settings->get_frontend_url(),
-				$this->theme_settings->get_blog_base(),
-				$post_slug
-			);
-		} else {
-			// Get the page slug and add the link to the page.
-			$response->data['link'] = str_replace(
-				home_url(),
-				$this->theme_settings->get_frontend_url(),
-				$response->data['link']
-			);
-		}
-
-		// If the response has a content property, replace the home_url() with the frontend URL.
-		if ( ! empty( $response->data['content']['rendered'] ) ) {
-			$response->data['content']['rendered'] = str_replace(
-				home_url(),
-				$this->theme_settings->get_frontend_url(),
-				$response->data['content']['rendered']
-			);
-		}
-
-		return $response;
+		// Modifies the author link.
+		add_filter( 'author_link', array( $this, 'modify_author_link' ) );
 	}
 
 	/**
@@ -119,12 +59,13 @@ final class BBH_Link_Modifier {
 	 * @return string Modified headless preview link.
 	 */
 	public function modify_preview_post_link( string $link, WP_Post $post ): string {
+		$url    = $this->theme_settings->get_frontend_url();
+		$secret = $this->theme_settings->get_preview_secret();
+
 		// Return the original link if the frontend URL or preview secret are not defined.
-		if ( ! $this->theme_settings->get_frontend_url() || ! $this->theme_settings->get_preview_secret() ) {
+		if ( ! $url || ! $secret ) {
 			return $link;
 		}
-
-		$url = $this->theme_settings->get_frontend_url();
 
 		$post_type = $post->post_type;
 		if ( 'post' === $post->post_type ) {
@@ -136,7 +77,7 @@ final class BBH_Link_Modifier {
 			array(
 				'id'     => $post->ID,
 				'type'   => $post_type,
-				'secret' => $this->theme_settings->get_preview_secret(),
+				'secret' => $secret,
 			),
 			esc_url_raw( "{$url}/api/preview" )
 		);
@@ -200,6 +141,23 @@ final class BBH_Link_Modifier {
 	 * @return string The modified URL.
 	 */
 	public function modify_tag_link( string $url ): string {
+		$frontend_blog_tag = sprintf(
+			'%s/%s',
+			$this->theme_settings->get_frontend_url(),
+			$this->theme_settings->get_blog_base(),
+		);
+
+		return str_replace( home_url(), $frontend_blog_tag, $url );
+	}
+
+	/**
+	 * Modifies the author link.
+	 *
+	 * @param string $url The original URL.
+	 *
+	 * @return string The modified URL.
+	 */
+	public function modify_author_link( string $url ): string {
 		$frontend_blog_tag = sprintf(
 			'%s/%s',
 			$this->theme_settings->get_frontend_url(),

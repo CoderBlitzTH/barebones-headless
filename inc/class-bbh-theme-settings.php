@@ -65,6 +65,42 @@ final class BBH_Theme_Settings {
 	}
 
 	/**
+	 * Returns the frontend URL.
+	 *
+	 * @return string The frontend URL.
+	 */
+	public function get_frontend_url(): string {
+		return $this->frontend_url;
+	}
+
+	/**
+	 * Returns the blog base.
+	 *
+	 * @return string The blog base.
+	 */
+	public function get_blog_base(): string {
+		return $this->blog_base;
+	}
+
+	/**
+	 * Returns the preview secret.
+	 *
+	 * @return string The preview secret.
+	 */
+	public function get_preview_secret(): string {
+		return $this->preview_secret;
+	}
+
+	/**
+	 * Returns the revalidate token.
+	 *
+	 * @return string The revalidate token.
+	 */
+	public function get_revalidate_token(): string {
+		return $this->revalidate_token;
+	}
+
+	/**
 	 * Constructs the class.
 	 */
 	private function __construct() {
@@ -96,8 +132,8 @@ final class BBH_Theme_Settings {
 	 */
 	public function add_admin_menu(): void {
 		add_menu_page(
-			'Headless Settings',
-			'Headless Settings',
+			'Theme Settings',
+			'Theme Settings',
 			'manage_options',
 			'bbh-theme-settings',
 			array( $this, 'render_settings_page' ),
@@ -138,7 +174,7 @@ final class BBH_Theme_Settings {
 		?>
 
 		<div class="wrap">
-			<h1>Headless Theme Settings</h1>
+			<h1>Theme Settings</h1>
 			<form
 				method="post"
 				action="options.php"
@@ -223,42 +259,6 @@ final class BBH_Theme_Settings {
 		</script>
 
 		<?php
-	}
-
-	/**
-	 * Returns the frontend URL.
-	 *
-	 * @return string The frontend URL.
-	 */
-	public function get_frontend_url(): string {
-		return $this->frontend_url;
-	}
-
-	/**
-	 * Returns the blog base.
-	 *
-	 * @return string The blog base.
-	 */
-	public function get_blog_base(): string {
-		return $this->blog_base;
-	}
-
-	/**
-	 * Returns the preview secret.
-	 *
-	 * @return string The preview secret.
-	 */
-	public function get_preview_secret(): string {
-		return $this->preview_secret;
-	}
-
-	/**
-	 * Returns the revalidate token.
-	 *
-	 * @return string The revalidate token.
-	 */
-	public function get_revalidate_token(): string {
-		return $this->revalidate_token;
 	}
 }
 
