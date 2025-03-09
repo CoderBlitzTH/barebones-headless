@@ -20,3 +20,5 @@ phpcs.xml export-ignore
 /.buildkite/ export-ignore
 /.github/ export-ignore
 /.vscode/ export-ignore
+
+/constant.php export-ignore
