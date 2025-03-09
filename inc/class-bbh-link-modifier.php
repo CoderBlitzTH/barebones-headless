@@ -36,6 +36,9 @@ final class BBH_Link_Modifier {
 	 * Initialize hooks.
 	 */
 	private function init_hooks(): void {
+
+		add_filter( 'home_url', array( $this, 'modify_home_url' ), 10, 3 );
+
 		// Modifies the post link and page link.
 		add_filter( 'preview_post_link', array( $this, 'modify_preview_post_link' ), 10, 2 );
 		add_filter( 'post_link', array( $this, 'modify_post_link' ), 10, 2 );
@@ -47,6 +50,44 @@ final class BBH_Link_Modifier {
 
 		// Modifies the author link.
 		add_filter( 'author_link', array( $this, 'modify_author_link' ) );
+	}
+
+	/**
+	 * Customize the WordPress home URL to point to the headless frontend.
+	 *
+	 * @param string      $url Original home URL.
+	 * @param string      $path Path relative to home URL.
+	 * @param string|null $scheme URL scheme.
+	 * @return string Modified frontend home URL.
+	 */
+	public function modify_home_url( string $url, string $path, $scheme = null ): string {
+		global $current_screen;
+
+		// Do not modify the URL for REST requests.
+		if ( 'rest' === $scheme ) {
+			return $url;
+		}
+
+		// Avoid modifying the URL in the block editor to ensure functionality.
+		if ( ( is_string( $current_screen ) || is_object( $current_screen ) ) && method_exists( $current_screen, 'is_block_editor' ) ) {
+			return $url;
+		}
+
+		// Do not modify the URL outside the WordPress admin.
+		if ( ! is_admin() ) {
+			return $url;
+		}
+
+		// Get the frontend URL.
+		$base_url = $this->theme_settings->get_frontend_url();
+
+		// Return the original URL if the frontend URL is not defined.
+		if ( ! $base_url ) {
+			return $url;
+		}
+
+		// Return the modified URL.
+		return $path ? "{$base_url}/" . ltrim( $path, '/' ) : $base_url;
 	}
 
 	/**

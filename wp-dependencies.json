@@ -12,5 +12,12 @@
     "slug": "classic-editor/classic-editor.php",
     "uri": "https://wordpress.org/plugins/classic-editor/",
     "required": true
+  },
+  {
+    "name": "Rank Math SEO",
+    "host": "wordpress",
+    "slug": "seo-by-rank-math/rank-math.php",
+    "uri": "https://wordpress.org/plugins/rank-math/",
+    "required": true
   }
 ]

@@ -63,3 +63,8 @@ require_once BBH_THEME_DIR . 'inc/class-bbh-link-modifier.php';
 if ( bbh_get_wpdi()->is_active( 'wp-graphql/wp-graphql.php' ) ) {
 	require_once BBH_THEME_DIR . 'inc/class-bbh-wpgraphql-comment.php';
 }
+
+// Rank Math SEO
+if ( bbh_get_wpdi()->is_active( 'seo-by-rank-math/rank-math.php' ) ) {
+	require_once BBH_THEME_DIR . 'inc/class-bbh-rankmath-seo.php';
+}
