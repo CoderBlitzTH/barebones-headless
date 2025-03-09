@@ -26,13 +26,19 @@ Barebones Headless เป็นธีม WordPress ที่ออกแบบ�
    - ต้องใช้คู่กับ WPGraphQL
    - ดาวน์โหลด: [github.com/AxeWP/wp-graphql-headless-login/](https://github.com/AxeWP/wp-graphql-headless-login/)
 
-3. **Advanced Custom Fields (ACF)** (แนะนำ)
+3. **WPGraphQL for Rank Math SEO** (จำเป็น)
+
+   - ใช้สำหรับสร้าง GraphQL SEO
+   - ต้องใช้คู่กับ WPGraphQL, Rank Math SEO
+   - ดาวน์โหลด: [github.com/AxeWP/wp-graphql-rank-math/](https://github.com/AxeWP/wp-graphql-rank-math/)
+
+4. **Advanced Custom Fields (ACF)** (แนะนำ)
 
    - ช่วยสร้างฟิลด์ข้อมูลพิเศษตามที่คุณต้องการ
    - รองรับทั้ง REST API และ GraphQL
    - ดาวน์โหลด: [wordpress.org/plugins/advanced-custom-fields/](https://wordpress.org/plugins/advanced-custom-fields/)
 
-4. **ACF to WPGraphQL** (ถ้าใช้ ACF กับ GraphQL)
+5. **ACF to WPGraphQL** (ถ้าใช้ ACF กับ GraphQL)
    - เชื่อมข้อมูลจาก ACF เข้ากับ GraphQL
    - ดาวน์โหลด: [wordpress.org/plugins/wpgraphql-acf/](https://wordpress.org/plugins/wpgraphql-acf/)
 
