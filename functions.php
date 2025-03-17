@@ -5,7 +5,7 @@
  *
  * @author ColderBlitz
  * @package barebones-headless
- * @since 1.2.0
+ * @since 1.2.1
  */
 
 declare( strict_types=1 );
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Define constants.
 define( 'BBH_THEME_DIR', trailingslashit( get_template_directory() ) );
 define( 'BBH_THEME_URL', trailingslashit( get_template_directory_uri() ) );
-define( 'BBH_THEME_VERSION', '1.2.0' );
+define( 'BBH_THEME_VERSION', '1.2.1' );
 
 if ( ! class_exists( 'YahnisElsts\PluginUpdateChecker\v5\PucFactory' ) ) {
 	require_once BBH_THEME_DIR . 'lib/update-checker/plugin-update-checker.php';

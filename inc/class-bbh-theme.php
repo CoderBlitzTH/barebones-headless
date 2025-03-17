@@ -56,6 +56,9 @@ final class BBH_Theme {
 		add_theme_support( 'title-tag' );
 		add_theme_support( 'post-thumbnails' );
 		add_theme_support( 'menus' );
+
+		// Register primary menu
+		register_nav_menu( 'primary', __( 'Primary Menu', 'bbh' ) );
 	}
 
 	/**

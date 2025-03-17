@@ -143,8 +143,11 @@ final class BBH_Revalidate {
 				foreach ( $taxonomies as $taxonomy ) {
 					$terms = get_the_terms( $post->ID, $taxonomy->name );
 					if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+						$taxonomy_slug = isset( $taxonomy->rewrite['slug'] )
+							? $taxonomy->rewrite['slug']
+							: $taxonomy->name;
 						foreach ( array_slice( $terms, 0, 3 ) as $term ) { // จำกัด 3 Terms
-							$paths[] = '/' . $post_type . '/' . $taxonomy->rewrite['slug'] . '/' . $term->slug;
+							$paths[] = '/' . $post_type . '/' . $taxonomy_slug . '/' . $term->slug;
 						}
 					}
 				}
